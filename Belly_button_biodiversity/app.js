@@ -13,14 +13,42 @@ d3.json(json).then(function(data) {
     dropdown.append('option').text(name).property('value', name)
   });
 
+// Use function to udpate the graphs when different input is chosen from dropdown
+  d3.selectAll("#selDataset").on("change", updatePlotly);
+  function updatePlotly() {
+    // Assign the value of the dropdown menu option to a variable
+    var dataset = dropdown.property("value");
+  
+    // Initialize x and y arrays
+    var x = [];
+    var y = [];
+  
+    if (dataset === 'dataset1') {
+      x = [1, 2, 3, 4, 5];
+      y = [1, 2, 4, 8, 16];
+    }
+  
+    else if (dataset === 'dataset2') {
+      x = [10, 20, 30, 40, 50];
+      y = [1, 10, 100, 1000, 10000];
+    }
+  
+    // Note the extra brackets around 'x' and 'y'
+    Plotly.restyle("plot", "x", [x]);
+    Plotly.restyle("plot", "y", [y]);
+  }
+  
+
 // Set up the trace for the bar chart (create slicing and reverse in x variable)
+  var strings = data.samples[0].otu_ids.slice(0,10).reverse();
+  var stringsArray = strings.map(item => `OTU ${item}`);
+
   var trace1 = {
-    x: data.samples[0].sample_values.slice(0,10),
-    y: data.samples[0].otu_ids,
-    hover_data: data.samples[0].otu_labels,
+    x: data.samples[0].sample_values.slice(0,10).reverse(),
+    y: stringsArray,
+    hover_data: data.samples[0].otu_labels.slice(0,10).reverse(),
     orientation: 'h',
-    type: 'bar',
-    width: 150
+    type: 'bar'
   };
 
 // Create the data array for the bar chart
