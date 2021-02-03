@@ -2,7 +2,7 @@
 var json = 'samples.json'
 
 // Import JSON data using d3 and log to the console to view
-d3.json(json).then(function(data) {
+d3.json(json).then(function init(data) {
     console.log(data);
 
 // Use d3 to select the dropdown menu
@@ -12,32 +12,6 @@ d3.json(json).then(function(data) {
   data.names.forEach(name => {
     dropdown.append('option').text(name).property('value', name)
   });
-
-// Use function to udpate the graphs when different input is chosen from dropdown
-  d3.selectAll("#selDataset").on("change", updatePlotly);
-  function updatePlotly() {
-    // Assign the value of the dropdown menu option to a variable
-    var dataset = dropdown.property("value");
-  
-    // Initialize x and y arrays
-    var x = [];
-    var y = [];
-  
-    if (dataset === 'dataset1') {
-      x = [1, 2, 3, 4, 5];
-      y = [1, 2, 4, 8, 16];
-    }
-  
-    else if (dataset === 'dataset2') {
-      x = [10, 20, 30, 40, 50];
-      y = [1, 10, 100, 1000, 10000];
-    }
-  
-    // Note the extra brackets around 'x' and 'y'
-    Plotly.restyle("plot", "x", [x]);
-    Plotly.restyle("plot", "y", [y]);
-  }
-  
 
 // Set up the trace for the bar chart (create slicing and reverse in x variable)
   var strings = data.samples[0].otu_ids.slice(0,10).reverse();
@@ -50,6 +24,9 @@ d3.json(json).then(function(data) {
     orientation: 'h',
     type: 'bar'
   };
+// Check the x and y values
+  console.log(data.samples[0].sample_values.slice(0,10).reverse());
+  console.log(stringsArray);
 
 // Create the data array for the bar chart
   var bar1 = [trace1];
@@ -57,8 +34,7 @@ d3.json(json).then(function(data) {
 // Define the plot layout for the bar chart
   var layout1 = {
     title: "Amount of bacteria for each OTU",
-    xaxis: {title: "Frequency"},
-    yaxis: {title: "OTU ID"}
+    xaxis: {title: "Frequency"}
   };
 
 // Use plotly to plot the bar chart
@@ -75,6 +51,10 @@ d3.json(json).then(function(data) {
       size: data.samples[0].sample_values
     }
   };
+
+// Check the x and y values
+  console.log(data.samples[0].otu_ids);
+  console.log(data.samples[0].sample_values);
 
 // Create the data array for the bubble chart
   var bubble2 = [trace2];
@@ -103,12 +83,40 @@ d3.json(json).then(function(data) {
   var ul = list.append("ul")
 
 // Append li tag with key value pair
-    ul.append("li").text(`id: ${idArray[0]}`);
-    ul.append("li").text(`ethnicity: ${ethnicityArray[0]}`);
-    ul.append("li").text(`gender: ${genderArray[0]}`);
-    ul.append("li").text(`age: ${ageArray[0]}`);
-    ul.append("li").text(`location: ${locationArray[0]}`);
-    ul.append("li").text(`bbtype: ${bbtypeArray[0]}`);
-    ul.append("li").text(`wfreq: ${wfreqArray[0]}`);
+  ul.append("li").text(`id: ${idArray[0]}`);
+  ul.append("li").text(`ethnicity: ${ethnicityArray[0]}`);
+  ul.append("li").text(`gender: ${genderArray[0]}`);
+  ul.append("li").text(`age: ${ageArray[0]}`);
+  ul.append("li").text(`location: ${locationArray[0]}`);
+  ul.append("li").text(`bbtype: ${bbtypeArray[0]}`);
+  ul.append("li").text(`wfreq: ${wfreqArray[0]}`);
     
 });
+
+// Use function to udpate the graphs when different input is chosen from dropdown
+d3.selectAll("#selDataset").on("change", optionChanged);
+d3.json(json).then(function optionChanged(data) {
+
+// Assign the value of the dropdown menu option to a variable
+  var dropdown = d3.select('#selDataset');
+  var idSelected = dropdown.property("value");
+  console.log(idSelected);
+
+// Clear test subject ID no. metadata info
+  var list = d3.select("#sample-metadata");
+  var ul = list.append("ul")
+  ul.html("");
+
+  var filteredData = data.samples.filter(value => value);
+
+// Repopulate the demographic table
+  ul.append("li").text(`id: ${filteredData.id}`);
+  ul.append("li").text(`ethnicity: ${filteredData.ethnicity}`);
+  ul.append("li").text(`gender: ${filteredData.gender}`);
+  ul.append("li").text(`age: ${filteredData.age}`);
+  ul.append("li").text(`location: ${filteredData.location}`);
+  ul.append("li").text(`bbtype: ${filteredData.bbtype}`);
+  ul.append("li").text(`wfreq: ${filteredData.wfreq}`);
+});
+
+init();
