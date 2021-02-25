@@ -1,4 +1,4 @@
-# plotly-challenge
+Belly Button Bacteria
 
 In this project I use a JSON dataset that shows the amount of belly button bacteria for more than 100 randomly chosen patients. In each sample, there are numerous types of bacteria, and I just use the top 10 bacterias for each patient.
 
